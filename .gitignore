@@ -16,3 +16,6 @@ dist/                   # Distribuciones generadas por herramientas externas
 *.tmp                   # Archivos temporales
 *.swp                   # Archivos de intercambio
 *.bak                   # Archivos de respaldo
+
+# Ignorar archivos .BIN
+*.BIN
