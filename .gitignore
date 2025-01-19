@@ -1,0 +1,18 @@
+# Archivos de configuración sensibles
+.env                    # Variables de entorno
+*.env                   # Cualquier archivo con extensión .env
+
+# Archivos binarios y ejecutables
+*.exe                   # Ejecutables de Windows
+*.out                   # Archivos ejecutables en Unix/Linux
+*.log                   # Archivos de log
+
+# Directorios generados por herramientas de compilación
+bin/                    # Carpeta de binarios generada por herramientas
+dist/                   # Distribuciones generadas por herramientas externas
+
+
+# Archivos temporales
+*.tmp                   # Archivos temporales
+*.swp                   # Archivos de intercambio
+*.bak                   # Archivos de respaldo
