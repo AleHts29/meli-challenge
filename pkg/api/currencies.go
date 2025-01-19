@@ -9,7 +9,7 @@ import (
 
 type Currencies interface {
 	FetchCurrencies() ([]models.Currency, error)
-	CurrenciesById(countryID string) (*models.Currency, error)
+	FetchCurrenciesConversionToUSD(currencyId string) (*models.CurrencyExchange, error)
 }
 
 type apiCurrencies struct {
@@ -53,10 +53,27 @@ func (a *apiCurrencies) FetchCurrencies() ([]models.Currency, error) {
 }
 
 // CountryById consulta la API de Mercado Libre para obtener información sobre un país específico.
-func (a *apiCurrencies) CurrenciesById(countryID string) (*models.Currency, error) {
+func (a *apiCurrencies) FetchCurrenciesConversionToUSD(currencyId string) (*models.CurrencyExchange, error) {
+	url := fmt.Sprintf("%s/currency_conversions/search?from=%s&to=USD", a.apiUrl, currencyId)
 
-	// Implementar la lógica para consultar la API de Mercado Libre
-	// y devolver la información del país específico
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %w", err)
+	}
 
-	return nil, nil
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error making request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("error fetching currencies conversion: status code %d", resp.StatusCode)
+	}
+	var currency models.CurrencyExchange
+	if err = json.NewDecoder(resp.Body).Decode(&currency); err != nil {
+		return nil, fmt.Errorf("error decoding response: %w", err)
+	}
+	return &currency, nil
 }

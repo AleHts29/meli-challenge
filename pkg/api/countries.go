@@ -9,7 +9,7 @@ import (
 
 type Countries interface {
 	FetchCountries() ([]models.Country, error)
-	CountryById(countryID string) (*models.Country, error)
+	FetchCountryById(countryID string) (*models.CountryInfo, error)
 }
 
 type apiCountries struct {
@@ -52,9 +52,28 @@ func (a *apiCountries) FetchCountries() ([]models.Country, error) {
 	return countries, nil
 }
 
-// CountryById consulta la API de Mercado Libre para obtener información sobre un país específico.
-func (a *apiCountries) CountryById(countryID string) (*models.Country, error) {
-	// Implementar la lógica para consultar la API de Mercado Libre
-	// y devolver la información del país específico
-	return nil, nil
+// FetchCountryById consulta la API de Mercado Libre para obtener información sobre un país específico.
+func (a *apiCountries) FetchCountryById(countryID string) (*models.CountryInfo, error) {
+	url := fmt.Sprintf("%s/classified_locations/countries/%s", a.apiUrl, countryID)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating request: %w", err)
+	}
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("error making request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("error fetching countryByID: status code %d", resp.StatusCode)
+	}
+
+	var country models.CountryInfo
+	if err = json.NewDecoder(resp.Body).Decode(&country); err != nil {
+		return nil, fmt.Errorf("error decoding response: %w", err)
+	}
+	return &country, nil
 }
