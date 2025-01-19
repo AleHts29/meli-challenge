@@ -7,27 +7,27 @@ import (
 	"net/http"
 )
 
-type Countries interface {
-	FetchCountries() ([]models.Country, error)
-	CountryById(countryID string) (*models.Country, error)
+type Currencies interface {
+	FetchCurrencies() ([]models.Currency, error)
+	CurrenciesById(countryID string) (*models.Currency, error)
 }
 
-type apiCountries struct {
+type apiCurrencies struct {
 	//accessToken string
 	apiUrl string
 }
 
 // NewCountries crea una nueva instancia de la estructura Contries.
-func NewCountries(accessToken, apiUrl string) Countries {
-	return &apiCountries{
+func NewCurrencies(accessToken, apiUrl string) Currencies {
+	return &apiCurrencies{
 		//accessToken: accessToken,
 		apiUrl: apiUrl,
 	}
 }
 
 // FetchCountries consulta la API de Mercado Libre para obtener información sobre países.
-func (a *apiCountries) FetchCountries() ([]models.Country, error) {
-	url := fmt.Sprintf("%s/classified_locations/countries", a.apiUrl)
+func (a *apiCurrencies) FetchCurrencies() ([]models.Currency, error) {
+	url := fmt.Sprintf("%s/currencies", a.apiUrl)
 
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -44,17 +44,19 @@ func (a *apiCountries) FetchCountries() ([]models.Country, error) {
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("error fetching countries: status code %d", resp.StatusCode)
 	}
-	var countries []models.Country
-	if err = json.NewDecoder(resp.Body).Decode(&countries); err != nil {
+	var currencies []models.Currency
+	if err = json.NewDecoder(resp.Body).Decode(&currencies); err != nil {
 		return nil, fmt.Errorf("error decoding response: %w", err)
 	}
 
-	return countries, nil
+	return currencies, nil
 }
 
 // CountryById consulta la API de Mercado Libre para obtener información sobre un país específico.
-func (a *apiCountries) CountryById(countryID string) (*models.Country, error) {
+func (a *apiCurrencies) CurrenciesById(countryID string) (*models.Currency, error) {
+
 	// Implementar la lógica para consultar la API de Mercado Libre
 	// y devolver la información del país específico
+
 	return nil, nil
 }

@@ -27,3 +27,15 @@ func (h *Handler) GetCountries() gin.HandlerFunc {
 		c.JSON(http.StatusOK, countries)
 	}
 }
+
+// GetCurrency devuelve la moneda asociada a una un Pais
+func (h *Handler) GetCurrency() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		currency, err := h.Service.FetchCurrencies()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+		c.JSON(http.StatusOK, currency)
+	}
+}

@@ -11,6 +11,8 @@ import (
 )
 
 func main() {
+	gin.SetMode(gin.ReleaseMode)
+
 	// Cargar el .env
 	cfg, err := config.LoadConfig()
 	if err != nil {
@@ -19,7 +21,9 @@ func main() {
 
 	// creacion de instancias
 	apiCountries := api.NewCountries(cfg.APIKey, cfg.APIUrl)
-	repository := ipinfo.NewRepository(apiCountries)
+	apiCurrencies := api.NewCurrencies(cfg.APIKey, cfg.APIUrl)
+
+	repository := ipinfo.NewRepository(apiCountries, apiCurrencies)
 	service := ipinfo.NewService(repository)
 
 	newHandler := handler.NewHandler(service)
@@ -27,9 +31,15 @@ func main() {
 	router := gin.Default()
 	//router.SetTrustedProxies([]string{"192.168.1.0/24"})// Si se usan proxies, especifica los rangos de IP confiables
 
-	countries := router.Group("/countries")
+	countries := router.Group("/api/countries")
 	{
 		countries.GET("", newHandler.GetCountries())
+		//countries.GET("/:countryId", contriesHandler.GetCountryById())
+	}
+
+	currencies := router.Group("/api/currencies")
+	{
+		currencies.GET("", newHandler.GetCurrency())
 		//countries.GET("/:countryId", contriesHandler.GetCountryById())
 	}
 
