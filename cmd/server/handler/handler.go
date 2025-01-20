@@ -85,7 +85,10 @@ func (h *Handler) BlockIPs() gin.HandlerFunc {
 
 		// Se bloquea la IP
 		for _, ip := range req.IPs {
-			h.Service.BlockIP(ip)
+			if err := h.Service.BlockIP(ip); err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "Error al guardar la lista de IPs bloqueadas", "details": err.Error()})
+				return
+			}
 		}
 
 		c.JSON(http.StatusOK, gin.H{"message": "bloqueo exitoso", "count": len(req.IPs)})

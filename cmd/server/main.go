@@ -31,7 +31,7 @@ func main() {
 	apiCountries := api.NewCountries(cfg.APIKey, cfg.APIUrl)
 	apiCurrencies := api.NewCurrencies(cfg.APIKey, cfg.APIUrl)
 	repository := ipinfo.NewRepository(apiCountries, apiCurrencies, ipStore)
-	service := ipinfo.NewService(repository)
+	service := ipinfo.NewService(repository, "./blocked_ips.json")
 	newHandler := handler.NewHandler(service)
 
 	router := gin.Default()

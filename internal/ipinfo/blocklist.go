@@ -15,6 +15,18 @@ func NewBlockList() *BlockList {
 	}
 }
 
+// GetAll retorna la lista de IPs bloqueadas
+func (bl *BlockList) GetAll() []string {
+	bl.mu.Lock()
+	defer bl.mu.Unlock()
+
+	blockedIPs := make([]string, 0, len(bl.blockedIPs))
+	for ip := range bl.blockedIPs {
+		blockedIPs = append(blockedIPs, ip)
+	}
+	return blockedIPs
+}
+
 // AddIP bloquea una IP
 func (bl *BlockList) AddIP(ip string) {
 	bl.mu.Lock()
