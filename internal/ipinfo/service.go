@@ -3,21 +3,20 @@ package ipinfo
 import (
 	"fmt"
 	"github.com/AleHts29/meli-challenge/internal/models"
+	"github.com/AleHts29/meli-challenge/pkg/cache"
 	"log"
 	"sync"
+	"time"
 )
 
 const (
 	BufferSizeEvents  = 256
 	BufferSizeClients = 10
+	CacheTime         = 5 * time.Minute
 )
 
 type Service interface {
-	FetchCountries() ([]models.Country, error)
-	FetchCountryById(countryID string) (*models.CountryInfo, error)
-	FetchCurrenciesConversionToUSD(currencyId string) (*models.CurrencyExchange, error)
-	FetchCurrencies() ([]models.Currency, error)
-	GetCountryByIP(ip string) (*models.IPInfo, error)
+	GetCountryDataByIP(ip string) (*models.CountryInfo, error)
 	BlockIP(ip string)
 	IsBlocked(ip string) bool
 	SubscribeEvents() chan models.BlockEvent
@@ -27,6 +26,7 @@ type Service interface {
 type service struct {
 	r         Repository
 	blockList *BlockList
+	cache     *cache.Cache
 	events    chan models.BlockEvent
 	mu        sync.Mutex
 	clients   map[chan models.BlockEvent]struct{}
@@ -37,6 +37,7 @@ func NewService(r Repository) Service {
 	return &service{
 		r:         r,
 		blockList: NewBlockList(),
+		cache:     cache.NewCache(CacheTime),
 		events:    make(chan models.BlockEvent, BufferSizeEvents),
 		clients:   make(map[chan models.BlockEvent]struct{}),
 	}
@@ -45,31 +46,36 @@ func NewService(r Repository) Service {
 ////////////////////////////////
 // *** DATA COUNTRIES ***
 
-// FetchCountries consulta la información de países del repositorio.
-func (s *service) FetchCountries() ([]models.Country, error) {
-	return s.r.FetchCountries()
-}
-
-// FetchCountryById consulta la información de un país específico del repositorio.
-func (s *service) FetchCountryById(countryID string) (*models.CountryInfo, error) {
-	return s.r.FetchCountryById(countryID)
-}
-
-// FetchCurrencies consulta la información de monedas del repositorio.
-func (s *service) FetchCurrencies() ([]models.Currency, error) {
-	return s.r.FetchCurrencies()
-}
-
-func (s *service) FetchCurrenciesConversionToUSD(currencyId string) (*models.CurrencyExchange, error) {
-	return s.r.FetchCurrenciesConversionToUSD(currencyId)
-}
-
-func (s *service) GetCountryByIP(ip string) (*models.IPInfo, error) {
-	// Verificacion de bloqueo de IP
-	if s.blockList.IsBlocked(ip) {
-		return nil, fmt.Errorf("la ip %s esta bloqueda", ip)
+// GetCountryDataByIP obtiene información de un país a partir de una IP.
+func (s *service) GetCountryDataByIP(ip string) (*models.CountryInfo, error) {
+	// Verificar si la información ya está en la caché
+	if data, ok := s.cache.Get(ip); ok {
+		return data.(*models.CountryInfo), nil
 	}
-	return s.r.GetCountryByIP(ip)
+
+	// Consultar la información desde el repositorio (APIs externas)
+	info, err := s.r.GetCountryByIP(ip)
+	if err != nil {
+		return nil, fmt.Errorf("error al obtener información del país para la IP: %w", err)
+	}
+
+	countryInfo, err := s.r.FetchCountryById(info.CountryCode)
+	if err != nil {
+		return nil, fmt.Errorf("error al obtener información del país: %w", err)
+	}
+
+	currencyConversion, err := s.r.FetchCurrenciesConversionToUSD(countryInfo.CurrencyId)
+	if err != nil {
+		return nil, fmt.Errorf("error al obtener la cotización de la moneda: %w", err)
+	}
+
+	// Agregar la cotización al objeto de información del país
+	countryInfo.CurrencyConversionToUSD = *currencyConversion
+
+	// Guardar el resultado en la caché
+	s.cache.Set(ip, countryInfo)
+
+	return countryInfo, nil
 }
 
 ////////////////////////////////

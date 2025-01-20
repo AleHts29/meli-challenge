@@ -30,18 +30,8 @@ func main() {
 	// creacion de instancias
 	apiCountries := api.NewCountries(cfg.APIKey, cfg.APIUrl)
 	apiCurrencies := api.NewCurrencies(cfg.APIKey, cfg.APIUrl)
-
 	repository := ipinfo.NewRepository(apiCountries, apiCurrencies, ipStore)
 	service := ipinfo.NewService(repository)
-
-	// Test para IP
-	results, err := service.GetCountryByIP("45.5.164.0")
-	if err != nil {
-		return
-	}
-	fmt.Printf("country_short: %s\n", results.CountryCode)
-	fmt.Printf("country_long: %s\n", results.CountryName)
-
 	newHandler := handler.NewHandler(service)
 
 	router := gin.Default()
