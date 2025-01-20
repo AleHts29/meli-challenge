@@ -102,6 +102,21 @@ mercado-libre-api/
 
 ---
 
+## APIs
+- GET    --> http://localhost:8081/api/ip/<IP>
+- POST   --> http://localhost:8081/api/ip/block
+
+
+- Para visualizar los eventos --> http://localhost:8081/, tabien es posible ejecutar un 
+   ```bash
+     curl http://localhost:8081/api/ip/events
+     
+     // ejemplo de mensaje
+       data: {"ip":"45.7.204.3","event":"BLOCKED"}
+   ```
+
+
+
 ## DB de IPs
 
 Con fin de trabajar con un listado de IPs para los diferentes paises en los que opera **MercadoLibre**, se esta usando una base de datos en formato binario `IP2LOCATION-LITE-DB1.BIN` que se descargo de IP2Location (recurso es gratuito), tambien se agrega un archivo .CSV de `LACNIC` para buscar una IP de prueba y poder realizar las requests correspondientes.
