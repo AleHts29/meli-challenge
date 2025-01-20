@@ -44,3 +44,8 @@ type IPInfo struct {
 	CountryCode string `json:"country_code"`
 	CountryName string `json:"country_name"`
 }
+
+type BlockEvent struct {
+	IP    string `json:"ip"`
+	Event string `json:"event"`
+}

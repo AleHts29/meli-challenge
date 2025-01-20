@@ -1,8 +1,12 @@
 package handler
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/AleHts29/meli-challenge/internal/ipinfo"
+	"github.com/AleHts29/meli-challenge/internal/models"
 	"github.com/gin-gonic/gin"
+	"log"
 	"net"
 	"net/http"
 )
@@ -104,6 +108,51 @@ func (h *Handler) BlockIPs() gin.HandlerFunc {
 
 		c.JSON(http.StatusOK, gin.H{"message": "bloqueo exitoso", "count": len(req.IPs)})
 	}
+}
+
+// NotifyBlockedIPs emite eventos de bloqueo a traves de Server-Sent Events (SSE)
+func (h *Handler) NotifyBlockedIPs() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		// Configuracion de headers para SSE
+		c.Writer.Header().Set("Content-Type", "text/event-stream")
+		c.Writer.Header().Set("Cache-Control", "no-cache")
+		c.Writer.Header().Set("Connection", "keep-alive")
+
+		// habilitacion de CORDS
+		//c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+
+		// Canal para detectar desconexión del cliente
+		disconnectChan := c.Writer.CloseNotify()
+
+		// Suscripcion al canal de eventos
+		clientChan := h.Service.SubscribeEvents()
+		defer h.Service.UnsubscribeEvents(clientChan)
+
+		// Loop para enviar eventos
+		for {
+			select {
+			case event := <-clientChan: // Escucha eeventos en el canal principal
+				_, err := fmt.Fprintf(c.Writer, "data: %s\n\n", formatEvent(event))
+				if err != nil {
+					log.Printf("Error: al enviar evento: %v", err)
+					return
+				}
+				//	Forzar la escritura del buffer al cliente
+				c.Writer.Flush()
+			case <-disconnectChan:
+				log.Println("Cliente desconectado")
+				return
+			default:
+			}
+
+		}
+	}
+}
+
+// formatEvent convierte un evento a JSON.
+func formatEvent(event models.BlockEvent) string {
+	data, _ := json.Marshal(event)
+	return string(data)
 }
 
 // GetCountries devuelve una lista de países.
