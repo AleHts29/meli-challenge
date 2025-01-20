@@ -107,7 +107,7 @@ mercado-libre-api/
 - POST   --> http://localhost:8081/api/ip/block
 
 
-- Para visualizar los eventos --> http://localhost:8081/, tabien es posible ejecutar un 
+- Para visualizar los eventos desde el navegador, ir a --> http://localhost:8081/, tabien es posible ejecutar un 
    ```bash
      curl http://localhost:8081/api/ip/events
      
