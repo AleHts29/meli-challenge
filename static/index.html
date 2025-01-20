@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventos de IPs bloqueadas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        .event-log {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border-radius: 5px;
+            max-height: 300px;
+            overflow-y: scroll;
+            border: 1px solid #ddd;
+        }
+        .event-log p {
+            margin: 0;
+            padding: 5px;
+            border-bottom: 1px solid #ddd;
+        }
+        .event-log p:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body>
+<h1>Eventos de IPs bloqueadas</h1>
+<div class="event-log" id="eventLog">
+    <p><em>Esperando eventos...</em></p>
+</div>
+
+<script>
+    // Conectar al endpoint de eventos del servidor
+    const eventLog = document.getElementById("eventLog");
+    const eventSource = new EventSource("http://localhost:8081/api/ip/events");
+
+    // Manejar la recepción de eventos
+    eventSource.onmessage = function (event) {
+        const data = JSON.parse(event.data);
+        console.log("==> DATA: ",data)
+        const p = document.createElement("p");
+        p.textContent = `IP: ${data.ip} - Evento: ${data.event}`;
+        eventLog.appendChild(p);
+
+        // Scroll hacia abajo automáticamente
+        eventLog.scrollTop = eventLog.scrollHeight;
+    };
+
+    // Manejar errores de conexión
+    eventSource.onerror = function () {
+        const p = document.createElement("p");
+        p.textContent = "Error al conectar con el servidor. Intentando reconectar...";
+        p.style.color = "red";
+        eventLog.appendChild(p);
+    };
+</script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+{
+	"info": {
+		"_postman_id": "20646749-f7ef-4746-a5eb-30ca8c26bae3",
+		"name": "MELI-Challenges",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21132885"
+	},
+	"item": [
+		{
+			"name": "countryByIp",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": [
+				{
+					"name": "req_success",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/ip/45.71.12.0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"ip",
+								"45.71.12.0"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 20 Jan 2025 15:33:31 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "1711"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"id\": \"BR\",\n    \"name\": \"Brasil\",\n    \"locale\": \"pt_BR\",\n    \"currency_id\": \"BRL\",\n    \"decimal_separator\": \",\",\n    \"thousands_separator\": \".\",\n    \"time_zone\": \"GMT-03:00\",\n    \"geo_information\": {\n        \"location\": {\n            \"latitude\": -23.6821604,\n            \"longitude\": -46.875494\n        }\n    },\n    \"CurrencyConversionToUSD\": {\n        \"currency_base\": \"BRL\",\n        \"currency_quote\": \"USD\",\n        \"rate\": 0.164992,\n        \"creation_date\": \"2025-01-20T15:05:31.000+00:00\",\n        \"valid_until\": \"2025-01-21T16:25:00.000+00:00\",\n        \"inv_rate\": 6.0609,\n        \"last_updated_date\": \"\"\n    },\n    \"states\": [\n        {\n            \"id\": \"TUxCUEFDUkVkNTU\",\n            \"name\": \"Acre\"\n        },\n        {\n            \"id\": \"TUxCUEFMQVNmZjUw\",\n            \"name\": \"Alagoas\"\n        },\n        {\n            \"id\": \"TUxCUEFNQUExNTZlNg\",\n            \"name\": \"Amapá\"\n        },\n        {\n            \"id\": \"TUxCUEFNQVMxNzgwYQ\",\n            \"name\": \"Amazonas\"\n        },\n        {\n            \"id\": \"TUxCUEJBSEFlYmEx\",\n            \"name\": \"Bahia\"\n        },\n        {\n            \"id\": \"TUxCUENFQUExNzkyZQ\",\n            \"name\": \"Ceará\"\n        },\n        {\n            \"id\": \"TUxCUERJU0wxMWJhYg\",\n            \"name\": \"Distrito Federal\"\n        },\n        {\n            \"id\": \"TUxCUEVTUE8xN2Y3NA\",\n            \"name\": \"Espírito Santo\"\n        },\n        {\n            \"id\": \"TUxCUEdPSVMxNzVmMw\",\n            \"name\": \"Goiás\"\n        },\n        {\n            \"id\": \"TUxCUE1BUk81MWVi\",\n            \"name\": \"Maranhão\"\n        },\n        {\n            \"id\": \"TUxCUE1BVE9jZDY0\",\n            \"name\": \"Mato Grosso\"\n        },\n        {\n            \"id\": \"TUxCUE1BVEw4ZTc\",\n            \"name\": \"Mato Grosso do Sul\"\n        },\n        {\n            \"id\": \"TUxCUE1JTlMxNTAyZA\",\n            \"name\": \"Minas Gerais\"\n        },\n        {\n            \"id\": \"TUxCUFBBUkExODBlZA\",\n            \"name\": \"Paraná\"\n        },\n        {\n            \"id\": \"TUxCUFBBUkE0M2I4\",\n            \"name\": \"Paraíba\"\n        },\n        {\n            \"id\": \"TUxCUFBBUkFiY2Uw\",\n            \"name\": \"Pará\"\n        },\n        {\n            \"id\": \"TUxCUFBFUk8xZmZj\",\n            \"name\": \"Pernambuco\"\n        },\n        {\n            \"id\": \"TUxCUFBJQUk1NDVj\",\n            \"name\": \"Piauí\"\n        },\n        {\n            \"id\": \"TUxCUFJJT0VkMmNj\",\n            \"name\": \"Rio Grande do Norte\"\n        },\n        {\n            \"id\": \"TUxCUFJJT0xkYzM0\",\n            \"name\": \"Rio Grande do Sul\"\n        },\n        {\n            \"id\": \"TUxCUFJJT08xODM5Zg\",\n            \"name\": \"Rio de Janeiro\"\n        },\n        {\n            \"id\": \"TUxCUFJPTkExMmU4YQ\",\n            \"name\": \"Rondônia\"\n        },\n        {\n            \"id\": \"TUxCUFJPUkExODBiMQ\",\n            \"name\": \"Roraima\"\n        },\n        {\n            \"id\": \"TUxCUFNBTkE5Nzc4\",\n            \"name\": \"Santa Catarina\"\n        },\n        {\n            \"id\": \"TUxCUFNFUkUxMmZlOQ\",\n            \"name\": \"Sergipe\"\n        },\n        {\n            \"id\": \"TUxCUFNBT085N2E4\",\n            \"name\": \"São Paulo\"\n        },\n        {\n            \"id\": \"TUxCUFRPQ1NjZDBm\",\n            \"name\": \"Tocantins\"\n        }\n    ]\n}"
+				},
+				{
+					"name": "ip_blocked",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8081/api/ip/45.7.204.3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"ip",
+								"45.7.204.3"
+							]
+						}
+					},
+					"status": "Forbidden",
+					"code": 403,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 20 Jan 2025 15:34:32 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "70"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"error\": \"IP está bloqueda, no es posible visualizar la informacion\"\n}"
+				}
+			]
+		},
+		{
+			"name": "ipBlocked",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"ip\": [\"45.7.204.0\",\"45.7.208.0\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/api/ip/block",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"api",
+						"ip",
+						"block"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "New Request",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"ip\": [\"45.7.204.3\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8081/api/ip/block",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"api",
+								"ip",
+								"block"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Mon, 20 Jan 2025 15:08:08 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "39"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"count\": 1,\n    \"message\": \"bloqueo exitoso\"\n}"
+				}
+			]
+		}
+	]
+}
