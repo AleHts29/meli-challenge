@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/AleHts29/meli-challenge/internal/ipinfo"
 	"github.com/gin-gonic/gin"
+	"net"
 	"net/http"
 )
 
@@ -24,6 +25,22 @@ func (h *Handler) GetCountryByIP() gin.HandlerFunc {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "Debe proporcionar una IP"})
 			return
 		}
+
+		// Validacion de formato de la IP
+		if net.ParseIP(ip) == nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "La IP proporcionada no es válida", "ip": ip})
+			return
+		}
+
+		// Verifica si la IP esta bloqueada.
+		if h.Service.IsBlocked(ip) {
+			c.JSON(http.StatusForbidden, gin.H{"error": "IP está bloqueda, no es posible visualizar la informacion"})
+			return
+		}
+
+		// TODO: Validar solo los paises en los que opera MELI
+
+		// TODO: Implementar un mecanismo de cache para mejorar la performance en consultas repetidas
 
 		// Obtiene el countryId de un pais mediante una IP
 		info, err := h.Service.GetCountryByIP(ip)
@@ -51,6 +68,41 @@ func (h *Handler) GetCountryByIP() gin.HandlerFunc {
 
 		// Se devuelve la información del país en formato JSON.
 		c.JSON(http.StatusOK, countryInfo)
+	}
+}
+
+// BlockIPs bloquea una o varias IPs para evitar que se consulte informacion del pais de origen
+func (h *Handler) BlockIPs() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var req struct {
+			IPs []string `json:"ip" binding:"required"`
+		}
+
+		// Intentar parsear el cuerpo de la solicitud
+		if err := c.ShouldBindJSON(&req); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Debe proporcionar una IP válida en el cuerpo de la solicitud", "details": err.Error()})
+			return
+		}
+
+		if len(req.IPs) == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Lista de IPs vacia, agregar las IPs que desea bloquear"})
+			return
+		}
+
+		// Validar formato de la lista de IPs
+		for _, ip := range req.IPs {
+			if net.ParseIP(ip) == nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": "La IP proporcionada no es válida", "ip": ip})
+				return
+			}
+		}
+
+		// Se bloquea la IP
+		for _, ip := range req.IPs {
+			h.Service.BlockIP(ip)
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "bloqueo exitoso", "count": len(req.IPs)})
 	}
 }
 

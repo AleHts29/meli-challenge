@@ -45,18 +45,11 @@ func main() {
 
 	router := gin.Default()
 	//router.SetTrustedProxies([]string{"192.168.1.0/24"})// Si se usan proxies, especifica los rangos de IP confiables
-	router.GET("/api/ip/:ip", newHandler.GetCountryByIP())
 
-	countries := router.Group("/api/countries")
+	ip := router.Group("/api/ip")
 	{
-		countries.GET("", newHandler.GetCountries())
-		//countries.GET("/:countryId", contriesHandler.GetCountryById())
-	}
-
-	currencies := router.Group("/api/currencies")
-	{
-		currencies.GET("", newHandler.GetCurrency())
-		//countries.GET("/:countryId", contriesHandler.GetCountryById())
+		ip.GET("/:ip", newHandler.GetCountryByIP())
+		ip.POST("/block", newHandler.BlockIPs())
 	}
 
 	// Iniciar el servidor
@@ -64,5 +57,4 @@ func main() {
 	if err := router.Run(fmt.Sprintf(":%s", cfg.ServerPort)); err != nil {
 		log.Fatalf("Error al iniciar el servidor: %v", err)
 	}
-
 }
