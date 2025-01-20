@@ -21,7 +21,7 @@ func main() {
 		panic(err)
 	}
 
-	ipStore, err := store.NewIpStore("./IP-COUNTRY-DB26.BIN")
+	ipStore, err := store.NewIpStore(cfg.IPStorePath)
 	if err != nil {
 		panic(err)
 		return
@@ -31,7 +31,7 @@ func main() {
 	apiCountries := api.NewCountries(cfg.APIKey, cfg.APIUrl)
 	apiCurrencies := api.NewCurrencies(cfg.APIKey, cfg.APIUrl)
 	repository := ipinfo.NewRepository(apiCountries, apiCurrencies, ipStore)
-	service := ipinfo.NewService(repository, "./blocked_ips.json")
+	service := ipinfo.NewService(repository, cfg.BlockedIPsFilePath)
 	newHandler := handler.NewHandler(service)
 
 	router := gin.Default()

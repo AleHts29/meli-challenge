@@ -65,6 +65,17 @@ func (s *service) GetCountryDataByIP(ip string) (*models.CountryInfo, error) {
 		return nil, fmt.Errorf("error al obtener información del país para la IP: %w", err)
 	}
 
+	// Obtener la lista de países en los que opera MELI
+	countries, err := s.r.FetchCountries()
+	if err != nil {
+		return nil, fmt.Errorf("error al obtener la lista de países: %w", err)
+	}
+
+	// Validar si el CountryCode está en la lista de países
+	if !s.isValidCountry(info.CountryCode, countries) {
+		return nil, fmt.Errorf("el país con código '%s' no es válido o no opera MercadoLibre", info.CountryCode)
+	}
+
 	countryInfo, err := s.r.FetchCountryById(info.CountryCode)
 	if err != nil {
 		return nil, fmt.Errorf("error al obtener información del país: %w", err)
@@ -84,6 +95,16 @@ func (s *service) GetCountryDataByIP(ip string) (*models.CountryInfo, error) {
 	return countryInfo, nil
 }
 
+// isValidCountry verifica si el countryCode está en la lista de países.
+func (s *service) isValidCountry(countryCode string, countries []models.Country) bool {
+	for _, country := range countries {
+		if country.ID == countryCode {
+			return true
+		}
+	}
+	return false
+}
+
 ////////////////////////////////
 // *** BLOCK_IP ***
 
@@ -100,7 +121,7 @@ func (s *service) BlockIP(ip string) error {
 	// Envia notificacion de bloqueo a clientes
 	go func() {
 		event := models.BlockEvent{IP: ip, Event: "BLOCKED"}
-		s.NotifyClients(event)
+		s.notifyClients(event)
 		log.Printf("[INFO] Evento emitido - IP %s bloqueada", ip)
 	}()
 
@@ -132,8 +153,8 @@ func (s *service) UnsubscribeEvents(clientChan chan models.BlockEvent) {
 	s.mu.Unlock()
 }
 
-// NotifyClients envía un evento a todos los clientes suscritos.
-func (s *service) NotifyClients(event models.BlockEvent) {
+// notifyClients envía un evento a todos los clientes suscritos.
+func (s *service) notifyClients(event models.BlockEvent) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	for clientChan := range s.clients {

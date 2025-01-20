@@ -42,10 +42,6 @@ func (h *Handler) GetCountryByIP() gin.HandlerFunc {
 			return
 		}
 
-		// TODO: Validar solo los paises en los que opera MELI
-
-		// TODO: Implementar un mecanismo de cache para mejorar la performance en consultas repetidas
-
 		countryInfo, err := h.Service.GetCountryDataByIP(ip)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})

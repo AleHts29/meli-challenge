@@ -40,34 +40,25 @@ El proyecto está organizado en tres directorios principales: `cmd/`, `internal/
 ```text
 mercado-libre-api/
 ├── cmd/
-│   └── api/
-│       ├── main.go          # Punto de entrada de la aplicación
+│   └── server/
+│       ├── server/
+│       │   └──  handler.go  # Manejo de peticiones HTTP relacionadas con IPs
+│       └── main.go          # Punto de entrada de la aplicación
 ├── internal/
 │   ├── ipinfo/
-│   │   ├── handler.go       # Manejo de peticiones HTTP relacionadas con IPs
 │   │   ├── service.go       # Lógica de negocio para resolver información de IPs
 │   │   ├── repository.go    # Interacción con APIs externas (países y monedas)
-│   │   └── model.go         # Estructuras de datos relacionadas con IPs y países
-│   ├── blocklist/
-│   │   ├── handler.go       # Gestión de bloqueos de IP
-│   │   ├── service.go       # Lógica para manipular la lista de bloqueos
-│   │   ├── repository.go    # Persistencia de la lista de bloqueos
-│   │   └── model.go         # Estructuras relacionadas con IPs bloqueadas
-│   ├── notifications/
-│   │   ├── service.go       # Lógica para envío de notificaciones descentralizadas
-│   │   └── model.go         # Estructuras para gestionar las notificaciones
+│   │   └── blocklist.go     # Lógica para manipular la lista de bloqueos
+│   ├── models/
+│   │   └── model.go         # Modelos estructuras
 │   └── config/
 │       └── config.go        # Configuración de la aplicación (API Keys, etc.)
 ├── pkg/
 │   ├── api/
 │   │   ├── countries.go     # Cliente para la API de países
-│   │   └── exchange.go      # Cliente para la API de cotización de monedas
-│   ├── cache/
-│   │   └── cache.go         # Implementación de caché en memoria
-│   ├── errors/
-│   │   └── errors.go        # Manejo centralizado de errores
-│   └── logger/
-│       └── logger.go        # Logging centralizado para toda la aplicación
+│   │   └── currencies.go    # Cliente para la API de cotización de monedas
+│   └── cache/
+│       └── cache.go         # Implementación de caché en memoria
 ├── go.mod                   # Configuración del módulo de Go
 └── go.sum                   # Archivo de dependencias
 ```
@@ -91,8 +82,10 @@ mercado-libre-api/
 4. Configura las variables de entorno en el archivo `config/config.go` para incluir:
     - API Keys necesarias para acceder a las APIs externas.
     - Configuración del puerto del servidor.
-
-5. Inicia el servidor:
+   
+5. Agregar el archivo `IP2LOCATION-LITE-DB1.BIN` en la ruta raiz del proyecto.
+   
+6. Inicia el servidor:
    ```bash
    go run cmd/api/main.go
    ```
@@ -109,8 +102,27 @@ mercado-libre-api/
 
 ---
 
-## Mejoras Futuras
+## DB de IPs
 
-- Integrar un sistema de mensajería como Kafka o RabbitMQ para manejar notificaciones de manera más eficiente.
-- Incorporar autenticación y autorización para proteger la API.
-- Implementar métricas y monitorización para analizar el rendimiento.
+Con fin de trabajar con un listado de IPs para los diferentes paises en los que opera **MercadoLibre**, se esta usando una base de datos en formato binario `IP2LOCATION-LITE-DB1.BIN` que se descargo de IP2Location (recurso es gratuito), tambien se agrega un archivo .CSV de `LACNIC` para buscar una IP de prueba y poder realizar las requests correspondientes.
+
+Puedes consultar más detalles en [LANIC](https://ftp.lacnic.net/pub/stats/lacnic/) y [IP2_LOCATION](https://lite.ip2location.com/database-download)
+
+
+
+
+## Ejemplo Lista de IPs de pruebas
+```csv
+lacnic|BR|ipv4|45.70.232.0|1024|20170913|allocated|127887
+lacnic|EC|ipv4|45.70.236.0|1024|20170913|allocated|279839
+lacnic|BR|ipv4|45.70.244.0|1024|20170915|allocated|278989
+lacnic|BR|ipv4|45.70.248.0|1024|20170925|allocated|220610
+lacnic|BR|ipv4|45.70.252.0|1024|20170925|allocated|239922
+lacnic|EC|ipv4|45.71.0.0|1024|20171004|allocated|279375
+lacnic|BR|ipv4|45.71.4.0|256|20170914|assigned|103789
+lacnic|AR|ipv4|45.71.5.0|256|20171123|assigned|84411
+lacnic|BR|ipv4|45.71.6.0|256|20170928|assigned|267952
+lacnic|CO|ipv4|45.71.7.0|256|20171124|assigned|280200
+lacnic|CL|ipv4|45.71.8.0|1024|20170915|assigned|259232
+lacnic|BR|ipv4|45.71.12.0|1024|20170914|allocated|276567
+```
