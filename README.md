@@ -28,7 +28,7 @@ Puedes consultar más detalles en [APIs de MELI](https://developers.mercadolibre
 
 - Evitar llamadas innecesarias a APIs externas mediante el uso de caché.
 - Garantizar la persistencia de datos (como la lista de bloqueos) ante un reinicio de la aplicación.
-- Implementar una arquitectura escalable y modular basada en microservicios.
+- Implementar una arquitectura escalable y modular.
 - Enviar notificaciones de forma descentralizada, asegurando independencia entre los servicios involucrados.
 
 ---
@@ -97,7 +97,6 @@ mercado-libre-api/
 - **Lenguaje**: Go (Golang)
 - **Framework**: Gin para la creación de APIs REST.
 - **Caché**: Implementación propia en memoria para reducir el tráfico hacia APIs externas.
-- **Logs**: Módulo personalizado de logging centralizado.
 - **Persistencia**: Archivos locales o bases de datos (según la implementación).
 
 ---
